@@ -1,0 +1,28 @@
+- lwjgl
+    - not a game engine
+    - wrapper graphic lib
+    - binding to C code
+
+- opengl lib
+    - lib
+    - draw stuff to gpu etc.
+    - send data back forth
+
+- rendering
+    - batching
+
+
+animation system
+    - finite state automata
+
+physics
+    - static/dyn physics
+    - collision detection.
+
+user interface
+    - window management
+
+packaging and distribution
+    - distribute and shit
+    - itch.io
+
