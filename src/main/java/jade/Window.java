@@ -3,18 +3,14 @@ package jade;
 import org.lwjgl.Version;
 import org.lwjgl.opengl.GL;
 
-import org.lwjgl.*;
+
 import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
 
-import java.nio.*;
-
-import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
+
+import static org.lwjgl.glfw.Callbacks.*;
 
 public class Window {
 
@@ -22,12 +18,19 @@ public class Window {
     private String title;
     private long glfwWindow;
 
+    private float r,g,b,a;
+    private boolean fadeToBlack = false;
+
     private static Window window = null;
 
     private Window(){
         this.width = 1920;
         this.height = 1080;
         this.title = "Mario";
+        r = 1;
+        b = 1;
+        g = 1;
+        a = 1;
     }
 
     public static Window get(){ // singleton
@@ -43,6 +46,14 @@ public class Window {
 
         init();
         loop();
+
+        // Free the memory once loop exits
+        glfwFreeCallbacks(glfwWindow);
+        glfwDestroyWindow(glfwWindow);
+
+        // Terminate GLFW and the free the error callback
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 
     public void init(){
@@ -68,6 +79,11 @@ public class Window {
             throw new IllegalStateException("Failed to create GLFW window.");
         }
 
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallBack);
+
         // Make the OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
         // Enable v-sync
@@ -76,7 +92,7 @@ public class Window {
         // Make the window visible
         glfwShowWindow(glfwWindow);
 
-        GL.createCapabilities(); // IMPORTANT AF, IDK WHY
+        GL.createCapabilities(); // IMPORTANT AF, IDK WHY. BINDINGS SUMTHIN
 
     }
 
@@ -85,8 +101,20 @@ public class Window {
             // Poll Events
             glfwPollEvents();
 
-            glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            if (fadeToBlack){
+                r = Math.max(r - 0.01f, 0);
+                g = Math.max(r - 0.01f, 0);
+                b = Math.max(r - 0.01f, 0);
+            }
+
+            if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
+//                System.out.println("Space key is pressed");
+                fadeToBlack = true;
+            }
+
 
             glfwSwapBuffers(glfwWindow);
         }
