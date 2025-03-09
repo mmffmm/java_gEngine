@@ -18,6 +18,8 @@ public class KeyListener {
         return KeyListener.instance;
     }
 
+
+    // this probably linked to lwjgl by the callback, then it was send back as a response, telling what key was pressed.
     public static void keyCallBack(long window, int key, int scancode, int action, int mods){// action = keypressed, keyreleased. key = which key pressed
         if (action == GLFW_PRESS){
             get().keyPressed[key] = true;
@@ -27,11 +29,11 @@ public class KeyListener {
     }
 
     public static boolean isKeyPressed(int keyCode){
-//        if (keyCode < get().keyPressed.length){
-//            return get().keyPressed[keyCode];
-//        } else {
-//            return false;
-//        }
+        //        if (keyCode < get().keyPressed.length){
+        //            return get().keyPressed[keyCode];
+        //        } else {
+        //            return false;
+        //        }
         return get().keyPressed[keyCode];
 
     }
